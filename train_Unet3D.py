@@ -22,7 +22,7 @@ def train_model(train_data, val_data, in_channels, out_channels, learning_rate=1
     model = LitUNet3D(in_channels, out_channels, learning_rate)
 
     # Initialize a PyTorch Lightning trainer
-    trainer = pl.Trainer(max_epochs=max_epochs, gpus=1 if torch.cuda.is_available() else 0)
+    trainer = pl.Trainer(max_epochs=max_epochs, gpus=1 if torch.cuda.is_available() else 0, default_root_dir='./logs')
 
     # Train the model
     trainer.fit(model, train_loader, val_loader)

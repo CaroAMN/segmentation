@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 
 
+
 class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(DoubleConv, self).__init__()
@@ -18,6 +19,37 @@ class DoubleConv(nn.Module):
         return self.double_conv(x)
 
 class UNet3D(nn.Module):
+    """3D U-Net implementation for volumetric segmentation.
+
+    This class implements a 3D U-Net architecture, which is a type of convolutional neural network
+    designed for volumetric (3D) image segmentation. The network consists of an encoder path
+    (contracting path) and a decoder path (expanding path) with skip connections between them.
+
+    Args:
+        in_channels (int): Number of input channels in the input volume
+        out_channels (int): Number of output channels (classes) in the final prediction
+
+    Architecture details:
+        - Encoder: 4 encoding blocks with increasing filters (64->128->256->512)
+        - Bottleneck: Double convolution with 1024 filters
+        - Decoder: 4 decoding blocks with decreasing filters (512->256->128->64)
+        - Skip connections: Between corresponding encoder and decoder blocks
+        - Final layer: 1x1x1 convolution to map to output classes
+
+    The forward pass takes a 5D tensor as input (B, C, D, H, W) where:
+        B: Batch size
+        C: Number of channels
+        D: Depth
+        H: Height
+        W: Width
+
+    Returns:
+        torch.Tensor: Segmentation map with shape (B, out_channels, D, H, W)
+    References:
+        - Olaf Ronneberger, Philipp Fischer, Thomas Brox. "U-Net: Convolutional Networks for Biomedical Image Segmentation"
+          https://arxiv.org/abs/1505.04597
+    """
+
     def __init__(self, in_channels, out_channels):
         super(UNet3D, self).__init__()
         self.enc1 = DoubleConv(in_channels, 64)
